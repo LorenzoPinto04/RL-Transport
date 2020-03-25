@@ -345,7 +345,6 @@ class DQNAgent:
         self.model = load_model()
 
     def save(self, name):
-        return
         self.model.save(name)
 
     pylab.figure(figsize=(18, 9))
