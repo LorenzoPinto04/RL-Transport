@@ -148,6 +148,7 @@ class Memory(object):  # stored as ( state, action, reward, next_state ) in SumT
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 import os
+os.environ["CUDA_VISIBLE_DEVICES"]="2"
 import random
 import gym
 import pylab
@@ -475,8 +476,8 @@ class DQNAgent:
         self.env.close()
 
 if __name__ == "__main__":
-    #env_name = 'BreakoutDeterministic-v4'
-    env_name = 'Pong-v0'
+    env_name = 'BreakoutDeterministic-v4'
+    #env_name = 'Pong-v0'
     agent = DQNAgent(env_name)
     agent.run()
     #agent.test('Models/Pong-v0_DQN_CNN.h5')

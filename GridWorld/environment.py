@@ -1,14 +1,15 @@
 import frame_runner as fr, math, random, pandas as pd, numpy as np
 
 def random_spawn(x, y):
-    return (random.randint(0, x - 2), random.randint(0, y - 2))
+    return (random.randint(0, x - 3), random.randint(0, y - 3))
 
 
-def create_grid(n_x, n_y, agent_pos, target_pos, transport_timetable, timestep):
+def create_grid(n_x, n_y, agent_pos, target_pos, transport_timetable, timestep, means):
     grid = np.zeros((n_y, n_x))
-    for i, row in transport_timetable.iterrows():
-        if row[0] == timestep:
-            grid[row[3]-1][row[2]-1] = 3
+    if means:
+        for i, row in transport_timetable.iterrows():
+            if row[0] == timestep:
+                grid[row[3]-1][row[2]-1] = 3
     grid[agent_pos[1]][agent_pos[0]] = 1
     grid[target_pos[1]][target_pos[0]] = 2
     return grid
@@ -30,7 +31,7 @@ def get_mean_pos(name, timestep):
 
 class GridWorld:
 
-    def __init__(self, show_graph_every=1, debug_mode=False):
+    def __init__(self, show_graph_every=1, debug_mode=False, means = True):
         self.n_x = 80
         self.n_y = 50
         self.done = False
@@ -47,6 +48,7 @@ class GridWorld:
         self.transport_used = False
         #self.max_steps = n_x + n_y
         self.max_steps = 60
+        self.use_means = means
         
         # visualization attributes 
         self.show_graph_every = show_graph_every
@@ -94,11 +96,13 @@ class GridWorld:
             self.reward -= 2
 
     def take_mean(self, name):
-        if distance(self.agent_pos, get_mean_pos(name, self.timestep)) == 1:
+        if not self.use_means:
+            return
+        if distance(self.agent_pos, get_mean_pos(name, self.timestep)) < 1:
+            self.agent_pos = get_mean_pos(name, self.timestep + 1)
+        elif distance(self.agent_pos, get_mean_pos(name, self.timestep)) <= 2:
             #self.extra_reward = 100
             print('-------------------------------------------------------------------------------------------ON A MEAN')
-            self.agent_pos = get_mean_pos(name, self.timestep + 1)
-        elif distance(self.agent_pos, get_mean_pos(name, self.timestep)) < 1:
             self.agent_pos = get_mean_pos(name, self.timestep + 1)
         else:
             self.reward -= 1
@@ -125,7 +129,7 @@ class GridWorld:
         self.timestep = 0
         self.agent_pos = random_spawn(self.n_x, self.n_y)
         self.target_pos = random_spawn(self.n_x, self.n_y)
-        self.grid = create_grid(self.n_x, self.n_y, self.agent_pos, self.target_pos, self.transport_timetable, self.timestep)
+        self.grid = create_grid(self.n_x, self.n_y, self.agent_pos, self.target_pos, self.transport_timetable, self.timestep, self.use_means)
         state = self.grid
         return state
 
@@ -170,7 +174,7 @@ class GridWorld:
             
             
             
-        self.grid = create_grid(self.n_x, self.n_y, self.agent_pos, self.target_pos, self.transport_timetable, self.timestep)
+        self.grid = create_grid(self.n_x, self.n_y, self.agent_pos, self.target_pos, self.transport_timetable, self.timestep, self.use_means)
         
         distance_1 = distance(self.agent_pos, self.target_pos)
         
