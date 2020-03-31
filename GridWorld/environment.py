@@ -1,7 +1,7 @@
 import frame_runner as fr, math, random, pandas as pd, numpy as np
 
 def random_spawn(x, y):
-    return (random.randint(0, x - 3), random.randint(0, y - 3))
+    return (random.randint(0, x - 2), random.randint(0, y - 2))
 
 
 def create_grid(n_x, n_y, agent_pos, target_pos, transport_timetable, timestep, means):
@@ -10,8 +10,11 @@ def create_grid(n_x, n_y, agent_pos, target_pos, transport_timetable, timestep, 
         for i, row in transport_timetable.iterrows():
             if row[0] == timestep:
                 grid[row[3]-1][row[2]-1] = 3
-    grid[agent_pos[1]][agent_pos[0]] = 1
-    grid[target_pos[1]][target_pos[0]] = 2
+        try:
+            grid[agent_pos[1]][agent_pos[0]] = 1
+        except:
+            grid[agent_pos[1]-1][agent_pos[0]-1] = 1
+        grid[target_pos[1]][target_pos[0]] = 2            
     return grid
 
 
@@ -97,6 +100,7 @@ class GridWorld:
 
     def take_mean(self, name):
         if not self.use_means:
+            self.reward -= 2
             return
         if distance(self.agent_pos, get_mean_pos(name, self.timestep)) < 1:
             self.agent_pos = get_mean_pos(name, self.timestep + 1)

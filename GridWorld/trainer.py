@@ -3,7 +3,7 @@ from functions import *
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="3"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import random
 import gym
 import numpy as np
@@ -51,8 +51,8 @@ def OurModel(input_shape, action_space, dueling):
 
     model = Model(inputs = X_input, outputs = X)
     #model.compile(loss="mean_squared_error", optimizer=RMSprop(lr=0.00025, rho=0.95, epsilon=0.01), metrics=["accuracy"])
-    #model.compile(optimizer=Adam(lr=0.00025), loss='mean_squared_error')
-    model.compile(optimizer=Adam(lr=0.00005), loss='mean_squared_error')
+    model.compile(optimizer=Adam(lr=0.00025), loss='mean_squared_error')
+    #model.compile(optimizer=Adam(lr=0.00005), loss='mean_squared_error')
 
     model.summary()
     return model
@@ -62,7 +62,7 @@ class DQNAgent:
         self.env_name = env_name       
         self.env = env
         self.action_size = 8
-        self.EPISODES = 1000
+        self.EPISODES = 1000000
         
         # Instantiate memory
         memory_size = 25000
@@ -214,8 +214,8 @@ class DQNAgent:
         self.scores.append(score)
         self.episodes.append(episode)
         self.average.append(sum(self.scores[-50:]) / len(self.scores[-50:]))
-        pylab.plot(self.episodes, self.average, 'r')
         pylab.plot(self.episodes, self.scores, 'b')
+        pylab.plot(self.episodes, self.average, 'r')
         pylab.ylabel('Score', fontsize=18)
         pylab.xlabel('Games', fontsize=18)
         dqn = 'DQN_'
@@ -342,13 +342,13 @@ class DQNAgent:
 
 debug_mode = False
 show_graph_every = False
-means = False
+means = True
 
 env = GridWorld(show_graph_every, debug_mode, means)
 
 
 if __name__ == "__main__":
-    env_name = 'GridWorld'
+    env_name = 'GridWorldMeans'
     agent = DQNAgent(env_name, env)
     agent.run()
     #agent.test('models/GridWorldDQN__CNN.h5')
