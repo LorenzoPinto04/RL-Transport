@@ -10,11 +10,11 @@ def create_grid(n_x, n_y, agent_pos, target_pos, transport_timetable, timestep, 
         for i, row in transport_timetable.iterrows():
             if row[0] == timestep:
                 grid[row[3]-1][row[2]-1] = 3
-        try:
-            grid[agent_pos[1]][agent_pos[0]] = 1
-        except:
-            grid[agent_pos[1]-1][agent_pos[0]-1] = 1
-        grid[target_pos[1]][target_pos[0]] = 2            
+    try:
+        grid[agent_pos[1]][agent_pos[0]] = 1
+    except:
+        grid[agent_pos[1]-1][agent_pos[0]-1] = 1
+    grid[target_pos[1]][target_pos[0]] = 2            
     return grid
 
 
@@ -35,8 +35,8 @@ def get_mean_pos(name, timestep):
 class GridWorld:
 
     def __init__(self, show_graph_every=1, debug_mode=False, means = True):
-        self.n_x = 80
-        self.n_y = 50
+        self.n_x = 8
+        self.n_y = 5
         self.done = False
         self.reward = 0
         self.total_reward = 0
@@ -50,7 +50,7 @@ class GridWorld:
         self.final_reward = 0
         self.transport_used = False
         #self.max_steps = n_x + n_y
-        self.max_steps = 60
+        self.max_steps = 10
         self.use_means = means
         
         # visualization attributes 
@@ -147,7 +147,7 @@ class GridWorld:
         
         if action == 0:
             self.action_performed = 'Wait'
-            self.reward -= .1
+            self.reward -= .2
         elif action == 1:
             self.action_performed = 'Move right'
             self.move_right()

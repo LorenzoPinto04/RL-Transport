@@ -3,7 +3,7 @@ from functions import *
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="0"
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
 import random
 import gym
 import numpy as np
@@ -273,7 +273,7 @@ class DQNAgent:
     
     def run(self):
         decay_step = 0
-        max_average = -21.0
+        max_average = -100000.0
         for e in range(self.EPISODES):
             state = self.reset()
             done = False
@@ -342,13 +342,13 @@ class DQNAgent:
 
 debug_mode = False
 show_graph_every = False
-means = True
+means = False
 
 env = GridWorld(show_graph_every, debug_mode, means)
 
 
 if __name__ == "__main__":
-    env_name = 'GridWorldMeans'
+    env_name = 'GridWorld'
     agent = DQNAgent(env_name, env)
     agent.run()
     #agent.test('models/GridWorldDQN__CNN.h5')
