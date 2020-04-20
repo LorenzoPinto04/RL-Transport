@@ -13,7 +13,7 @@ from skimage.color import rgb2gray
 from skimage.transform import resize
 from keras.models import Model
 import os
-os.environ["CUDA_VISIBLE_DEVICES"]="5"
+os.environ["CUDA_VISIBLE_DEVICES"]="4"
 from collections import deque
 from keras.optimizers import RMSprop
 from keras import backend as K
@@ -39,7 +39,7 @@ FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('train_dir', 'tf_train_breakout',
                            """Directory where to write event logs and checkpoint. """)
 tf.app.flags.DEFINE_string('restore_file_path',
-                           'tf_train_breakout/breakout_model_retrain_downloaded',
+                           'tf_train_breakout/breakout_model_breakout_scratch',
                            """Path of the restore file """)
 tf.app.flags.DEFINE_integer('num_episode', 100000,
                             """number of epochs of the optimization loop.""")
@@ -49,15 +49,15 @@ tf.app.flags.DEFINE_integer('epsilon_step_num', 1000000,
                             """frames over which to anneal epsilon.""")
 tf.app.flags.DEFINE_integer('refresh_target_model_num', 10000,  # update the target Q model every refresh_target_model_num
                             """frames over which to anneal epsilon.""")
-tf.app.flags.DEFINE_integer('replay_memory', 50000,  # takes up to 20 GB to store this amount of history data
+tf.app.flags.DEFINE_integer('replay_memory', 1000000,  # takes up to 20 GB to store this amount of history data
                             """number of previous transitions to remember.""")
-tf.app.flags.DEFINE_integer('no_op_steps', 30,
+tf.app.flags.DEFINE_integer('no_op_steps', 10,
                             """Number of the steps that runs before script begin.""")
 tf.app.flags.DEFINE_float('regularizer_scale', 0.01,
                           """L1 regularizer scale.""")
 tf.app.flags.DEFINE_integer('batch_size', 32,
                             """Size of minibatch to train.""")
-tf.app.flags.DEFINE_float('learning_rate', 0.00025,
+tf.app.flags.DEFINE_float('learning_rate', 0.000025,
                           """Number of batches to run.""")
 tf.app.flags.DEFINE_float('init_epsilon', 1.0,
                           """starting value of epsilon.""")
@@ -65,7 +65,7 @@ tf.app.flags.DEFINE_float('final_epsilon', 0.1,
                           """final value of epsilon.""")
 tf.app.flags.DEFINE_float('gamma', 0.99,
                           """decay rate of past observations.""")
-tf.app.flags.DEFINE_boolean('resume', False,
+tf.app.flags.DEFINE_boolean('resume', True,
                             """Whether to resume from previous checkpoint.""")
 tf.app.flags.DEFINE_boolean('render', False,
                             """Whether to display the game.""")
@@ -75,7 +75,7 @@ ACTION_SIZE = 3
 
 
 now = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-now = 'breakout_skratch'
+now = 'retrain_scratch_v2'
 
 scores = []
 averages = []
